@@ -11,7 +11,7 @@ public class ExcelImporterTest {
 	
 	@Test
 	public void shouldImportExcelSuccessfullyFromStaticFile() throws InvalidFormatException, IOException {
-		ExcelImporter excelImporter = new ExcelImporter(new File("c:\\temp\\test.xlsx"));
+		ExcelImporter excelImporter = new ExcelImporter(new File("d:\\test.xlsx"));
 		Map<Integer, Object[]> result = excelImporter.extractData();
 		printConsoleResult(result);
 		//TODO do the asserts when get the correct excel file

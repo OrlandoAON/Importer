@@ -99,7 +99,17 @@ public class ExcelImporter {
 			while (cells.hasNext()) {
 				Cell cell = cells.next();
 				if (cell.getColumnIndex() <= getColumns()) {
-					data[cell.getColumnIndex()] = cell.getStringCellValue(); 
+					switch(cell.getCellType()) {
+					case Cell.CELL_TYPE_BOOLEAN:
+						data[cell.getColumnIndex()] = cell.getBooleanCellValue();
+                        break;
+                    case Cell.CELL_TYPE_NUMERIC:
+                    	data[cell.getColumnIndex()] = cell.getNumericCellValue();
+                        break;
+                    case Cell.CELL_TYPE_STRING:
+                        data[cell.getColumnIndex()] = cell.getStringCellValue(); 
+                        break;
+					}	
 				}
 			}
 		}
