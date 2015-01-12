@@ -15,6 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelImporter {
 	
+	private static final int DEFAULT_SHEET = 0;
+
 	private static final int FIRST_POSITION = 0;
 
 	private XSSFWorkbook workbook;
@@ -54,7 +56,7 @@ public class ExcelImporter {
 
 	private void init() {
 		
-		XSSFSheet sheet = getWorkbook().getSheetAt(0);
+		XSSFSheet sheet = getWorkbook().getSheetAt(DEFAULT_SHEET);
 		int maxColumn = 0;
 		int maxRow = 0;
 		Iterator<Row> rows = sheet.iterator();
