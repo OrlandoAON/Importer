@@ -2,6 +2,7 @@ package com.nixsys.importer.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -76,7 +78,7 @@ public class ExcelImporter {
 			if (firstRow == null) {
 				break;
 			}
-			if (!StringUtils.isBlank(firstRow.getStringCellValue())) {
+			if (!StringUtils.isBlank(getValue(firstRow))) {
 				maxRow++;
 			}
 		}
@@ -84,6 +86,24 @@ public class ExcelImporter {
 		setRows(maxRow);
 	}
 	
+	private String getValue(Cell cell) {
+		switch (cell.getCellType()) {
+			case Cell.CELL_TYPE_BOOLEAN:
+				return String.valueOf(cell.getBooleanCellValue());
+			case Cell.CELL_TYPE_NUMERIC:
+				if (DateUtil.isCellDateFormatted(cell)) {
+					SimpleDateFormat format = new SimpleDateFormat();
+					format.applyPattern("dd/MM/yyyy");
+					return format.format(cell.getDateCellValue());
+				} else {
+					return String.valueOf(cell.getNumericCellValue());
+				}
+			case Cell.CELL_TYPE_STRING:
+				return cell.getStringCellValue();
+			}
+		return "";
+	}
+
 	public Map<Integer, Object[]> extractData() {
 		
 		Map<Integer, Object[]> result = new HashMap<Integer, Object[]>();
@@ -106,7 +126,11 @@ public class ExcelImporter {
 						data[cell.getColumnIndex()] = cell.getBooleanCellValue();
                         break;
                     case Cell.CELL_TYPE_NUMERIC:
-                    	data[cell.getColumnIndex()] = cell.getNumericCellValue();
+                    	if (DateUtil.isCellDateFormatted(cell)) {
+                    		data[cell.getColumnIndex()] = cell.getDateCellValue();
+                    	} else {
+                    		data[cell.getColumnIndex()] = cell.getNumericCellValue();
+                    	}
                         break;
                     case Cell.CELL_TYPE_STRING:
                         data[cell.getColumnIndex()] = cell.getStringCellValue(); 
